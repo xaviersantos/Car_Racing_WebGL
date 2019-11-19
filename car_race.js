@@ -40,8 +40,6 @@ var globalRotationYY_DIR = 1;
 
 var globalRotationYY_SPEED = 1;
 
-var gameSpeed = 0.1;
-
 // To allow choosing the way of drawing the model triangles
 
 var primitiveType = null;
@@ -257,7 +255,7 @@ function drawScene() {
 	
 	// Ensure that the model is "inside" the view volume
 	
-	pMatrix = perspective( 45, 1, 0.05, 13.5 );
+	pMatrix = perspective( 45, 1, 0.05, 30 );
 	
 	// Global transformation !!
 	
