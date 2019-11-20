@@ -100,17 +100,61 @@ function countFrames() {
 //  Rendering
 //
 
+// Handling the Textures
+
+// From www.learningwebgl.com
+
+function handleLoadedTexture(texture) {
+	
+	gl.bindTexture(gl.TEXTURE_2D, texture);
+	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+	gl.bindTexture(gl.TEXTURE_2D, null);
+}
+
+
+var webGLTexture;
+
+function initTexture() {
+	
+	webGLTexture = gl.createTexture();
+	webGLTexture.image = new Image();
+	webGLTexture.image.onload = function () {
+		handleLoadedTexture(webGLTexture)
+	}
+
+	webGLTexture.image.src = "NeHe.gif";
+}
+
 // Handling the Vertex Coordinates and the Vertex Normal Vectors
 
 function initBuffers( model ) {	
 	
-	// Vertex Coordinates
-		
+	// Coordinates
+
 	triangleVertexPositionBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(model.vertices), gl.STATIC_DRAW);
 	triangleVertexPositionBuffer.itemSize = 3;
-	triangleVertexPositionBuffer.numItems =  model.vertices.length / 3;			
+	triangleVertexPositionBuffer.numItems = model.vertices.length / 3;
+
+	// Textures
+		
+    triangleVertexTextureCoordBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexTextureCoordBuffer);
+ 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(model.textureCoords), gl.STATIC_DRAW);
+    triangleVertexTextureCoordBuffer.itemSize = 2;
+    triangleVertexTextureCoordBuffer.numItems = model.textureCoords.length;			
+
+	// Vertex indices
+	
+    triangleVertexIndexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triangleVertexIndexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(model.vertexIndices), gl.STATIC_DRAW);
+    triangleVertexIndexBuffer.itemSize = 1;
+    triangleVertexIndexBuffer.numItems = model.vertexIndices.length;	
 
 	// Associating to the vertex shader
 	
@@ -141,12 +185,6 @@ function drawModel( model,
 					mvMatrix,
 					primitiveType ) {
 
-	// The the global model transformation is an input
-	
-	// Concatenate with the particular model transformations
-	
-    // Pay attention to transformation order !!
-    
 	mvMatrix = mult( mvMatrix, translationMatrix( model.tx, model.ty, model.tz ) );
 						 
 	mvMatrix = mult( mvMatrix, rotationZZMatrix( model.rotAngleZZ ) );
@@ -162,15 +200,33 @@ function drawModel( model,
 	var mvUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
 	
 	gl.uniformMatrix4fv(mvUniform, false, new Float32Array(flatten(mvMatrix)));
-    
-	// Associating the data to the vertex shader
-	
-	// This can be done in a better way !!
 
-	// Vertex Coordinates and Vertex Normal Vectors
-	
 	initBuffers(model);
+
+	initTexture();
+
+    // Passing the buffers
+    	
+	gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
+    
+    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, triangleVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    
+    // Textures
 	
+	/*
+	gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexTextureCoordBuffer);
+    gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, triangleVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, webGLTexture);
+        
+    gl.uniform1i(shaderProgram.samplerUniform, 0);
+    */
+
+    // The vertex indices
+    
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triangleVertexIndexBuffer);
+
 	// Material properties
 	
 	gl.uniform3fv( gl.getUniformLocation(shaderProgram, "k_ambient"), 
@@ -184,6 +240,20 @@ function drawModel( model,
 
 	gl.uniform1f( gl.getUniformLocation(shaderProgram, "shininess"), 
 		model.nPhong );
+
+	//Light Sources
+	
+	for(var i = 0; i < lightSources.length; i++ )
+	{
+		gl.uniform1i( gl.getUniformLocation(shaderProgram, "allLights[" + String(i) + "].isOn"),
+			lightSources[i].isOn );
+    
+		gl.uniform4fv( gl.getUniformLocation(shaderProgram, "allLights[" + String(i) + "].position"),
+			flatten(lightSources[i].getPosition()) );
+    
+		gl.uniform3fv( gl.getUniformLocation(shaderProgram, "allLights[" + String(i) + "].intensities"),
+			flatten(lightSources[i].getIntensity()) );
+    }
 
     // Light Sources
 	
@@ -205,31 +275,11 @@ function drawModel( model,
 		gl.uniform3fv( gl.getUniformLocation(shaderProgram, "allLights[" + String(i) + "].intensities"),
 			flatten(lightSources[i].getIntensity()) );
     }
-        
-	// Drawing 
+
+    // Drawing the triangles --- NEW --- DRAWING ELEMENTS 
 	
-	// primitiveType allows drawing as filled triangles / wireframe / vertices
-	
-	if( primitiveType == gl.LINE_LOOP ) {
+	gl.drawElements(gl.TRIANGLES, triangleVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 		
-		// To simulate wireframe drawing!
-		
-		// No faces are defined! There are no hidden lines!
-		
-		// Taking the vertices 3 by 3 and drawing a LINE_LOOP
-		
-		var i;
-		
-		for( i = 0; i < triangleVertexPositionBuffer.numItems / 3; i++ ) {
-		
-			gl.drawArrays( primitiveType, 3 * i, 3 ); 
-		}
-	}	
-	else {
-				
-		gl.drawArrays(primitiveType, 0, triangleVertexPositionBuffer.numItems); 
-		
-	}	
 }
 
 //----------------------------------------------------------------------------
@@ -266,11 +316,6 @@ function drawScene() {
 	pos_Viewer[0] = pos_Viewer[1] = pos_Viewer[2] = 0.0;
 	
 	pos_Viewer[3] = 2.0;  
-	
-	// TO BE DONE !
-	
-	// Allow the user to control the size of the view volume
-
 
 	// Passing the Projection Matrix to apply the current projection
 	
@@ -494,19 +539,7 @@ function initWebGL( canvas ) {
 		// NEW - Drawing the triangles defining the model
 		
 		primitiveType = gl.TRIANGLES;
-		
-		// DEFAULT: Face culling is DISABLED
-		
-		// Enable FACE CULLING
-		
-		gl.enable( gl.CULL_FACE );
-		
-		// DEFAULT: The BACK FACE is culled!!
-		
-		// The next instruction is not needed...
-		
-		gl.cullFace( gl.BACK );
-		
+
 		// Enable DEPTH-TEST
 		
 		gl.enable( gl.DEPTH_TEST );
