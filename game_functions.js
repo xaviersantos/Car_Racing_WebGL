@@ -1,5 +1,5 @@
 
-var gameSpeed = 0.15;
+var gameSpeed = 0;
 var score = 0;
 var carSpeed = 0;
 
@@ -8,6 +8,18 @@ var xxPos = [-0.5, 0.0, 0.5];
 var playerCar = sceneModels[1];
 var obstacle1 = sceneModels[2];
 var obstacle2 = sceneModels[3];
+
+function startGame() {
+	if(gameSpeed == 0){
+		if(obstacle1.tz >= 0 || obstacle2.tz >= 0){
+			obstacle1.tz = -30;
+			obstacle2.tz = -30;
+		}
+		gameSpeed = 0.15;
+		playerCar.rotYYOn = false;
+		playerCar.rotAngleYY = 180;
+	}
+}
 
 function turn (direction) {
 	switch (direction){

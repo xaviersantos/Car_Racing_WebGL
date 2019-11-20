@@ -480,29 +480,6 @@ function outputInfos(){
 
 function setEventListeners(){
 
-	// Dropdown list
-	
-	var list = document.getElementById("rendering-mode-selection");
-	
-	list.addEventListener("click", function(){
-				
-		// Getting the selection
-		
-		var mode = list.selectedIndex;
-				
-		switch(mode){
-			
-			case 0 : primitiveType = gl.TRIANGLES;
-				break;
-			
-			case 1 : primitiveType = gl.LINE_LOOP;
-				break;
-			
-			case 2 : primitiveType = gl.POINTS;
-				break;
-		}
-	}); 
-
 	document.onkeydown = function(e) {
 	    switch (e.keyCode) {
 	        case 37:
@@ -512,6 +489,10 @@ function setEventListeners(){
 	        case 39:
 	            turn('right');
 	            break;
+
+	        case 32:
+	        	startGame();
+	        	break;
 	    }
 	};
 
@@ -660,6 +641,8 @@ function runWebGL() {
 	var canvas = document.getElementById("my-canvas");
 	
 	initWebGL( canvas );
+
+	primitiveType = gl.TRIANGLES;
 
 	shaderProgram = initShaders( gl );
 	
