@@ -19,6 +19,10 @@ function startGame() {
 		playerCar.rotYYOn = false;
 		playerCar.rotAngleYY = 180;
 	}
+	score = 0;
+	document.getElementById('score').innerHTML = 'SCORE: ' + score;
+	carSpeed = Math.floor(gameSpeed * 1000 - 100);
+	document.getElementById('car_speed').innerHTML = 'SPEED: ' + carSpeed + ' KPH';
 }
 
 function turn (direction) {
@@ -45,8 +49,7 @@ function obstaclesMove ( speed ) {
 	}
 
 	if (obstacle1.tz >= 1 || obstacle2.tz >= 1){
-		obstacle1.tz = obstacle2.tz = -30;
-		randomXXPos();
+		resetObstacles();
 		if(gameSpeed < 0.50){
 			gameSpeed += 0.01;
 			carSpeed = Math.floor(gameSpeed * 1000 - 100);
@@ -57,7 +60,8 @@ function obstaclesMove ( speed ) {
 	}
 }
 
-function randomXXPos () {
+function resetObstacles () {
+	obstacle1.tz = obstacle2.tz = -30;
 	obstacle1.tx = xxPos[Math.floor(Math.random() * 3)];
 	obstacle2.tx = xxPos[Math.floor(Math.random() * 3)];
 }
