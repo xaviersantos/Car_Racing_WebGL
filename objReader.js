@@ -1,11 +1,10 @@
 
-document.getElementById("obj-file").onload = function(){
-		
-		var file = this.files[0];
-		
-		var reader = new FileReader();
-		
-		reader.onload = function( progressEvent ){
+
+	var file = loadFile("file://~/models/car.obj")
+
+	var reader = new FileReader();
+
+	reader.onload = function( progressEvent ){
 
 	// Entire file read as a string
 	
@@ -87,5 +86,14 @@ document.getElementById("obj-file").onload = function(){
 
 	return [vertices, vertexIndices, normals];
 }
+
+function loadFile(filePath) {
+  var result = null;
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.open("GET", filePath, false);
+  xmlhttp.send();
+  if (xmlhttp.status==200) {
+    result = xmlhttp.responseText;
+  }
+  return result;
 }
-		

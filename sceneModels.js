@@ -134,7 +134,7 @@ function roadModel(){
 
 	road.vertexIndices = [
 
-		0, 1, 2,	0,2,3
+		0, 1, 2,	0, 2, 3
 
 	];
 
@@ -186,16 +186,18 @@ sceneModels[0].sx = sceneModels[0].sy = 1.0; sceneModels[0].sz = 1000
 
 sceneModels.push( new simpleCubeModel() );
 
-sceneModels[1].sx = sceneModels[1].sz = 0.2; sceneModels[1].sy *= 0.2
+sceneModels[1].sx = sceneModels[1].sz = sceneModels[1].sy *= 0.08
 
 sceneModels[1].ty = -0.8; sceneModels[1].tz = -0.2;
+
+sceneModels[1].rotAngleYY = 180;
 
 
 //Obstacle 1
 
 sceneModels.push( new simpleCubeModel() );
 
-sceneModels[2].sx = sceneModels[2].sz = 0.2; sceneModels[2].sy *= 0.2
+sceneModels[2].sx = sceneModels[2].sz = sceneModels[2].sy *= 0.08
 
 sceneModels[2].ty = -0.8; sceneModels[2].tz = -15;
 
@@ -203,6 +205,6 @@ sceneModels[2].ty = -0.8; sceneModels[2].tz = -15;
 
 sceneModels.push( new simpleCubeModel() );
 
-sceneModels[3].sx = sceneModels[3].sz = 0.2; sceneModels[3].sy *= 0.2
+sceneModels[3].sx = sceneModels[3].sz = sceneModels[3].sy *= 0.08
 
 sceneModels[3].ty = -0.8; sceneModels[3].tz = -15; sceneModels[3].tx = -0.5;
