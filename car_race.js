@@ -105,7 +105,7 @@ function countFrames() {
 // From www.learningwebgl.com
 
 function handleLoadedTexture(texture) {
-	
+
 	gl.bindTexture(gl.TEXTURE_2D, texture);
 	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
@@ -139,6 +139,14 @@ function initBuffers( model ) {
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(model.vertices), gl.STATIC_DRAW);
 	triangleVertexPositionBuffer.itemSize = 3;
 	triangleVertexPositionBuffer.numItems = model.vertices.length / 3;
+
+	// Colors
+
+	triangleVertexColorBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexColorBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(model.colors), gl.STATIC_DRAW);
+	triangleVertexColorBuffer.itemSize = 3;
+	triangleVertexColorBuffer.numItems = model.vertices.length / 3;
 
 	// Textures
 		
@@ -211,7 +219,13 @@ function drawModel( model,
     
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, triangleVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
     
-    // Textures
+    //Colors
+	
+	gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexColorBuffer);
+
+	gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, triangleVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+	// Textures
 	
 	/*
 	gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexTextureCoordBuffer);

@@ -23,6 +23,10 @@
 	// The new face vectors
 	
 	var newFaces = [];
+
+	// The new face vectors
+
+	var newColors = [];
 	
 	// Check every line and store 
 
@@ -40,9 +44,11 @@
 	    {
 			// For every vertex we have 3 floating point values
 
-			for( j = 1; j < 4; j++ ) {
-
-				newVertices.push( parseFloat( tokens[ j ] ) );
+			for( j = 1; j < 7; j++ ) {
+				if (j < 4)
+					newVertices.push( parseFloat( tokens[ j ] ) );
+				else
+					newColors.push( parseFloat( tokens[ j ] ) );
 			}
 		}
 
@@ -75,7 +81,9 @@
 
 	vertexIndices = newFaces.slice();
 
-	console.log(vertices);
+	colors = newColors.slice();
+
+	console.log(colors);
 	
 	// Checking to see if the normals are defined on the file
 	
@@ -84,16 +92,5 @@
 		computeVertexNormals( vertices, normals );
 	}
 
-	return [vertices, vertexIndices, normals];
-}
-
-function loadFile(filePath) {
-  var result = null;
-  var xmlhttp = new XMLHttpRequest();
-  xmlhttp.open("GET", filePath, false);
-  xmlhttp.send();
-  if (xmlhttp.status==200) {
-    result = xmlhttp.responseText;
-  }
-  return result;
+	return [vertices, vertexIndices, normals, colors];
 }

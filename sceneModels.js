@@ -22,6 +22,8 @@ function emptyModelFeatures() {
 
 	this.normals = [];
 
+	this.colors = [];
+
 	this.textureCoords = [];
 
 	// Transformation parameters
@@ -156,13 +158,8 @@ function roadModel(){
 
 function carModel(){
 	var car = new emptyModelFeatures();
-	var data = [];
 
-	data = objReader(car);
-
-	console.log(data)
-	console.log(data[1])
-	console.log(data[2])
+	objReader(car);
 
 	return car;
 }
