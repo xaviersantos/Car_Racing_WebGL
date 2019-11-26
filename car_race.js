@@ -20,9 +20,15 @@ var gl = null; // WebGL context
 
 var shaderProgram = null;
 
-var triangleVertexPositionBuffer = null;
+var modelVertexPositionBuffer = null;
 	
-var triangleVertexNormalBuffer = null;	
+var modelVertexNormalBuffer = null;
+
+var modelVertexColorBuffer = null;
+
+var modelVertexTextureCoordBuffer = null;
+
+var modelVertexIndexBuffer = null;
 
 // The GLOBAL transformation parameters
 
@@ -130,59 +136,49 @@ function initTexture() {
 
 // Handling the Vertex Coordinates and the Vertex Normal Vectors
 
-function initBuffers( model ) {	
-	
+function initBuffers( model ) {
+
 	// Coordinates
 
-	triangleVertexPositionBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
+	modelVertexPositionBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, modelVertexPositionBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(model.vertices), gl.STATIC_DRAW);
-	triangleVertexPositionBuffer.itemSize = 3;
-	triangleVertexPositionBuffer.numItems = model.vertices.length / 3;
+	modelVertexPositionBuffer.itemSize = 3;
+	modelVertexPositionBuffer.numItems = model.vertices.length / 3;
 
 	// Colors
 
-	triangleVertexColorBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexColorBuffer);
+	modelVertexColorBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, modelVertexColorBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(model.colors), gl.STATIC_DRAW);
-	triangleVertexColorBuffer.itemSize = 3;
-	triangleVertexColorBuffer.numItems = model.vertices.length / 3;
+	modelVertexColorBuffer.itemSize = 3;
+	modelVertexColorBuffer.numItems = model.vertices.length / 3;
 
 	// Textures
-		
-    triangleVertexTextureCoordBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexTextureCoordBuffer);
- 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(model.textureCoords), gl.STATIC_DRAW);
-    triangleVertexTextureCoordBuffer.itemSize = 2;
-    triangleVertexTextureCoordBuffer.numItems = model.textureCoords.length;			
+	/*
+	modelVertexTextureCoordBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, modelVertexTextureCoordBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(model.textureCoords), gl.STATIC_DRAW);
+	modelVertexTextureCoordBuffer.itemSize = 2;
+	modelVertexTextureCoordBuffer.numItems = model.textureCoords.length;
+	*/
 
 	// Vertex indices
-	
-    triangleVertexIndexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triangleVertexIndexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(model.vertexIndices), gl.STATIC_DRAW);
-    triangleVertexIndexBuffer.itemSize = 1;
-    triangleVertexIndexBuffer.numItems = model.vertexIndices.length;	
 
-	// Associating to the vertex shader
-	
-	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, 
-			triangleVertexPositionBuffer.itemSize, 
-			gl.FLOAT, false, 0, 0);
-	
+	modelVertexIndexBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, modelVertexIndexBuffer);
+	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(model.vertexIndices), gl.STATIC_DRAW);
+	modelVertexIndexBuffer.itemSize = 1;
+	modelVertexIndexBuffer.numItems = model.vertexIndices.length;
+
 	// Vertex Normal Vectors
-		
-	triangleVertexNormalBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexNormalBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array( model.normals), gl.STATIC_DRAW);
-	triangleVertexNormalBuffer.itemSize = 3;
-	triangleVertexNormalBuffer.numItems = model.normals.length / 3;			
 
-	// Associating to the vertex shader
-	
-	gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, 
-			triangleVertexNormalBuffer.itemSize, 
-			gl.FLOAT, false, 0, 0);	
+	modelVertexNormalBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, modelVertexNormalBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(model.normals), gl.STATIC_DRAW);
+	modelVertexNormalBuffer.itemSize = 3;
+	modelVertexNormalBuffer.numItems = model.normals.length / 3;
+
 }
 
 //----------------------------------------------------------------------------
@@ -211,35 +207,43 @@ function drawModel( model,
 
 	initBuffers(model);
 
-	initTexture();
+	//initTexture();
 
     // Passing the buffers
-    	
-	gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
-    
-    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, triangleVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-    
-    //Colors
-	
-	gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexColorBuffer);
 
-	gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, triangleVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+	//Coordinates
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, modelVertexPositionBuffer);
+    
+    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, modelVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+	//Colors
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, modelVertexColorBuffer);
+
+	gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, modelVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+	//Normals
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, modelVertexNormalBuffer);
+
+	gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, modelVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+	// The vertex indices
+
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, modelVertexIndexBuffer);
 
 	// Textures
 	
 	/*
-	gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexTextureCoordBuffer);
-    gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, triangleVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+	gl.bindBuffer(gl.ARRAY_BUFFER, modelVertexTextureCoordBuffer);
+    gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, modelVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, webGLTexture);
         
     gl.uniform1i(shaderProgram.samplerUniform, 0);
     */
-
-    // The vertex indices
-    
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triangleVertexIndexBuffer);
 
 	// Material properties
 	
@@ -292,7 +296,7 @@ function drawModel( model,
 
     // Drawing the triangles --- NEW --- DRAWING ELEMENTS 
 	
-	gl.drawElements(gl.TRIANGLES, triangleVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+	gl.drawElements(gl.TRIANGLES, modelVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 		
 }
 
@@ -527,6 +531,10 @@ function setEventListeners(){
 			// The new vertices
 			
 			var newVertices = [];
+
+			// The new colors
+
+			var newColors = [];
 			
 			// The new normal vectors
 			
@@ -552,9 +560,11 @@ function setEventListeners(){
 			    {
 					// For every vertex we have 3 floating point values
 
-					for( j = 1; j < 4; j++ ) {
-
-						newVertices.push( parseFloat( tokens[ j ] ) );
+					for( j = 1; j < 7; j++ ) {
+						if (j < 4)
+							newVertices.push( parseFloat( tokens[ j ] ) );
+						else
+							newColors.push( parseFloat( tokens[ j ] ) );
 					}
 				}
 
@@ -587,30 +597,30 @@ function setEventListeners(){
 
 			sceneModels[1].vertexIndices = newFaces.slice();
 
+			sceneModels[1].colors = newColors.slice();
+
 			sceneModels[2].vertices = newVertices.slice();
 			
 			sceneModels[2].normals = newNormals.slice();
 
 			sceneModels[2].vertexIndices = newFaces.slice();
 
+			sceneModels[2].colors = newColors.slice();
+
 			sceneModels[3].vertices = newVertices.slice();
 			
 			sceneModels[3].normals = newNormals.slice();
 
 			sceneModels[3].vertexIndices = newFaces.slice();
-			
-			// Checking to see if the normals are defined on the file
-			
-			if( sceneModels[1].normals.length == 0 )
-			{
-				computeVertexNormals( sceneModels[1].vertices, sceneModels[1].normals );
-			}
+
+			sceneModels[3].colors = newColors.slice();
+			console.log(sceneModels[3].colors);
 		};
 		
 		// Entire file read as a string
 
 		reader.readAsText( file );		
-	}     
+	}
 }
 
 //----------------------------------------------------------------------------
@@ -655,8 +665,6 @@ function runWebGL() {
 	var canvas = document.getElementById("my-canvas");
 	
 	initWebGL( canvas );
-
-	primitiveType = gl.TRIANGLES;
 
 	shaderProgram = initShaders( gl );
 	

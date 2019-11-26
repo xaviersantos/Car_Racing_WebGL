@@ -1,13 +1,12 @@
 
-
-	var file = loadFile("file://~/models/car.obj")
-
-	var reader = new FileReader();
-
-	reader.onload = function( progressEvent ){
+function objReader ( progressEvent ){
 
 	// Entire file read as a string
-	
+
+	var fs = require("fs");
+	var file = fs.readFileSync("./models/car2.obj", "utf-8");
+	console.log(file);
+
 	// The file lines
 	
 	lines = text.split('\n');
@@ -74,23 +73,31 @@
 	}	
 
 	// Assigning to the current model
-	
-	vertices = newVertices.slice();
-	
-	normals = newNormals.slice();
 
-	vertexIndices = newFaces.slice();
+	// Assigning to the current model
 
-	colors = newColors.slice();
+	sceneModels[1].vertices = newVertices.slice();
 
-	console.log(colors);
-	
+	sceneModels[1].normals = newNormals.slice();
+
+	sceneModels[1].vertexIndices = newFaces.slice();
+
+	sceneModels[2].vertices = newVertices.slice();
+
+	sceneModels[2].normals = newNormals.slice();
+
+	sceneModels[2].vertexIndices = newFaces.slice();
+
+	sceneModels[3].vertices = newVertices.slice();
+
+	sceneModels[3].normals = newNormals.slice();
+
+	sceneModels[3].vertexIndices = newFaces.slice();
+
 	// Checking to see if the normals are defined on the file
-	
-	if( normals.length == 0 )
-	{
-		computeVertexNormals( vertices, normals );
-	}
 
-	return [vertices, vertexIndices, normals, colors];
-}
+	if( sceneModels[1].normals.length == 0 )
+	{
+		computeVertexNormals( sceneModels[1].vertices, sceneModels[1].normals );
+	}
+};

@@ -74,11 +74,11 @@ function emptyModelFeatures() {
 	
 	// Material features
 	
-	this.kAmbi = [ 0.2, 0.2, 0.2 ];
+	this.kAmbi = [ 0.0, 0.0, 0.0 ];
 	
-	this.kDiff = [ 0.7, 0.7, 0.7 ];
+	this.kDiff = [ 0.3, 0.3, 0.3];
 
-	this.kSpec = [ 0.7, 0.7, 0.7 ];
+	this.kSpec = [ 0.5, 0.5, 0.5 ];
 
 	this.nPhong = 100;
 }
@@ -118,6 +118,21 @@ function simpleCubeModel( ) {
 
 	];
 
+	cube.colors = [
+
+		// Front face
+		1.0, 0.0,  0.0,
+		1.0, 0.0,  0.0,
+		1.0, 0.0,  0.0,
+		1.0, 0.0,  0.0,
+
+		// Back face
+		1.0, 0.0,  0.0,
+		1.0, 0.0,  0.0,
+		1.0, 0.0,  0.0,
+		1.0, 0.0,  0.0,
+	];
+
 	computeVertexNormals( cube.vertices, cube.normals );
 
 	return cube;
@@ -140,6 +155,13 @@ function roadModel(){
 
 	];
 
+	road.colors = [
+		0.0, 0.0,  0.0,
+		0.0, 0.0,  0.0,
+		0.0, 0.0,  0.0,
+		0.0, 0.0,  0.0,
+	]
+
 	/*
 	road.textureCoords = [
 
@@ -160,6 +182,8 @@ function carModel(){
 	var car = new emptyModelFeatures();
 
 	objReader(car);
+	console.log(car.vertices);
+	console.log(car.colors);
 
 	return car;
 }
@@ -197,6 +221,7 @@ sceneModels.push( new simpleCubeModel() );
 sceneModels[2].sx = sceneModels[2].sz = sceneModels[2].sy *= 0.08
 
 sceneModels[2].ty = -0.8; sceneModels[2].tz = -15;
+
 
 //Obstacle 2
 

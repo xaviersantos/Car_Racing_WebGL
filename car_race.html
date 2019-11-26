@@ -34,6 +34,8 @@ The fragment shader is the same simple one.
 	
     attribute vec3 vPosition;
 
+    attribute vec3 aVertexColor;
+
     uniform mat4 uMVMatrix;
 
     uniform mat4 uPMatrix;
@@ -183,8 +185,9 @@ The fragment shader is the same simple one.
            } 
 
 		   // Adding the components
-		
-           fColor += diffuse + specular;
+
+           fColor += diffuse + specular + vec4(aVertexColor, 1.0);
+
 	   }
 	}
     
