@@ -1,8 +1,3 @@
----
-author:
-- Xavier Santos
-title: WebGL Racing Car Game
----
 # WebGL Racing Car Game
 A simple arcade-like racing car game running in WebGL/JavaScript for the first project in the Visual Computing course.
 
