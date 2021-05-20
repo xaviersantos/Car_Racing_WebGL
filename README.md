@@ -31,7 +31,7 @@ To display the models we use a 600x448 WebGL canvas with an image
 background and set the default scaling of the X coordinate to 600/448 to
 keep the aspect ratio of the models in a wider display.
 
-![Game canvas](report/game.png){#fig:game width="\\linewidth"}
+![Game canvas](report/game.png)
 
 ## Camera
 
@@ -59,8 +59,7 @@ downloaded from [free3d.com](free3d.com) and then edited and simplified
 using MeshLab[^1] to create an OBJ file with the information of the
 vertex, vertex normals, vertex colors and faces of the 3D model.
 
-![3D car model in MeshLab](report/car_meshlab.png){#fig:car_meshlab
-width="\\linewidth"}
+![3D car model in MeshLab](report/car_meshlab.png)
 
 ## Light Sources
 
